@@ -127,7 +127,7 @@ class _MyHomePageState extends State<MyHomePage> {
           Expanded(
               flex: 0,
               child: Text(
-                "Caffè Americano",
+                "Expresso Latte",
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
               )),
           Padding(
@@ -203,7 +203,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 //TODO: Currently _cupsCounter only show 1 when this button is clicked.
                 // TODO: Increment the _cupsCounter when 'Add to Bag' button is clicked'
                 //TODO: Call setState((){}) method to update both price and cups counter when 'Add to Bag' button is clicked
-                
+
                 setState(() {
                   this._cupsCounter += 1;
                   this.price += int.parse(_coffeePrice);
@@ -220,7 +220,7 @@ class _MyHomePageState extends State<MyHomePage> {
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(50)),
             ),
-          )
+          ),
         ],
       ),
     );
@@ -248,20 +248,21 @@ class _MyHomePageState extends State<MyHomePage> {
             color: isSelected ? Colors.blue : Colors.black45,
           ),
           decoration: BoxDecoration(
-              border: Border(
-                  top: BorderSide(
-                      color: isSelected ? Colors.blue : Colors.black45,
-                      width: isSelected ? 2 : 1),
-                  left: BorderSide(
-                      color: isSelected ? Colors.blue : Colors.black45,
-                      width: isSelected ? 2 : 1),
-                  bottom: BorderSide(
-                      color: isSelected ? Colors.blue : Colors.black45,
-                      width: isSelected ? 2 : 1),
-                  right: BorderSide(
-                      color: isSelected ? Colors.blue : Colors.black45,
-                      width: isSelected ? 2 : 1)),
-              borderRadius: BorderRadius.all(Radius.circular(5))),
+            border: Border(
+                top: BorderSide(
+                    color: isSelected ? Colors.blue : Colors.black45,
+                    width: isSelected ? 2 : 1),
+                left: BorderSide(
+                    color: isSelected ? Colors.blue : Colors.black45,
+                    width: isSelected ? 2 : 1),
+                bottom: BorderSide(
+                    color: isSelected ? Colors.blue : Colors.black45,
+                    width: isSelected ? 2 : 1),
+                right: BorderSide(
+                    color: isSelected ? Colors.blue : Colors.black45,
+                    width: isSelected ? 2 : 1)),
+            borderRadius: BorderRadius.all(Radius.circular(5)),
+          ),
         )
       ],
     );
@@ -276,27 +277,28 @@ class _MyHomePageState extends State<MyHomePage> {
             color: Colors.transparent, //could change this to Color(0xFF737373),
             //so you don't have to change MaterialApp canvasColor
             child: new Container(
-                padding: EdgeInsets.all(10),
-                decoration: new BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: new BorderRadius.only(
-                        topLeft: const Radius.circular(10.0),
-                        topRight: const Radius.circular(10.0))),
-                child: Column(
-                  children: [
-                    Container(
-                      child: Text(
-                        "Confirm Order",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 18),
-                      ),
-                      alignment: Alignment.center,
-                      height: 30,
-                      decoration: BoxDecoration(),
+              padding: EdgeInsets.all(10),
+              decoration: new BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: new BorderRadius.only(
+                      topLeft: const Radius.circular(10.0),
+                      topRight: const Radius.circular(10.0))),
+              child: Column(
+                children: [
+                  Container(
+                    child: Text(
+                      "Confirm Order",
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                     ),
-                    _getEstimate(totalPrice, numOfCups)
-                  ],
-                )),
+                    alignment: Alignment.center,
+                    height: 30,
+                    decoration: BoxDecoration(),
+                  ),
+                  _getEstimate(totalPrice, numOfCups)
+                ],
+              ),
+            ),
           );
         });
   }
