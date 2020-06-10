@@ -49,7 +49,6 @@ class _MyHomePageState extends State<MyHomePage> {
         elevation: 0,
         title: FlatButton(
             onPressed: () {
-              //TODO: Uncomment the _confirmOrderModalBottomSheet() method to show summary of order
               _confirmOrderModalBottomSheet(
                   totalPrice: "$_currency$price", numOfCups: "x $_cupsCounter");
             },
@@ -63,8 +62,6 @@ class _MyHomePageState extends State<MyHomePage> {
         actions: [
           InkWell(
             onTap: () {
-              //TODO: Uncomment the setState() function to clear the price and cups
-              //TODO: Change the 'price' to 0 when this button is clicked
               setState(() {
                 this.price = 0;
                 this._cupsCounter = 0;
@@ -200,10 +197,6 @@ class _MyHomePageState extends State<MyHomePage> {
             height: 70,
             child: FlatButton(
               onPressed: () {
-                //TODO: Currently _cupsCounter only show 1 when this button is clicked.
-                // TODO: Increment the _cupsCounter when 'Add to Bag' button is clicked'
-                //TODO: Call setState((){}) method to update both price and cups counter when 'Add to Bag' button is clicked
-
                 setState(() {
                   this._cupsCounter += 1;
                   this.price += int.parse(_coffeePrice);
@@ -218,7 +211,8 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               color: Colors.blue,
               shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(50)),
+                borderRadius: BorderRadius.circular(50),
+              ),
             ),
           ),
         ],
@@ -279,10 +273,12 @@ class _MyHomePageState extends State<MyHomePage> {
             child: new Container(
               padding: EdgeInsets.all(10),
               decoration: new BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: new BorderRadius.only(
-                      topLeft: const Radius.circular(10.0),
-                      topRight: const Radius.circular(10.0))),
+                color: Colors.white,
+                borderRadius: new BorderRadius.only(
+                  topLeft: const Radius.circular(10.0),
+                  topRight: const Radius.circular(10.0),
+                ),
+              ),
               child: Column(
                 children: [
                   Container(
