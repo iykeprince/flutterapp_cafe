@@ -1,29 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:flutterapp/first.dart';
+import './first.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(First());
 }
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
+  Coffee coffee;
+
+  MyApp({Key key, @required this.coffee}) : super(key: key);
+  
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Coffee Test',
+      title: this.coffee.title,
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primaryColor: Colors.white,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: MyHomePage(title: 'Coffee Test'),
+      home: MyHomePage(coffee: this.coffee),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+  MyHomePage({Key key, this.coffee}) : super(key: key);
 
-  final String title;
+  final Coffee coffee;
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
@@ -32,7 +38,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _selectedPosition = -1;
 
-  String _coffeePrice = "0";
+  double _coffeePrice = 0.0;
 
   int _cupsCounter = 0;
 
@@ -40,50 +46,66 @@ class _MyHomePageState extends State<MyHomePage> {
 
   String _currency = "₦";
 
-  static const String coffeeCup = "images/coffee_cup_size.png";
+  String _coffeeCup = "images/coffee_cup_size.png";
+
+  Coffee _selectedCoffee;
+
+  @override
+  void initState() {
+    this._selectedCoffee = widget.coffee;
+    this._coffeeCup = "images/coffee/coffee-1.png";
+    
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
+    print('Sent Coffee '+ this._selectedCoffee.toString());
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        title: FlatButton(
-            onPressed: () {
-              _confirmOrderModalBottomSheet(
-                  totalPrice: "$_currency$price", numOfCups: "x $_cupsCounter");
-            },
-            child: Text(
-              "Buy Now",
-              style: TextStyle(color: Colors.black87),
+        appBar: AppBar(
+          elevation: 0,
+          title: FlatButton(
+              onPressed: () {
+                _confirmOrderModalBottomSheet(
+                    totalPrice: "$_currency$price",
+                    numOfCups: "x $_cupsCounter");
+              },
+              child: Text(
+                "Buy Now",
+                style: TextStyle(color: Colors.black87),
+              ),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(18.0),
+                  side: BorderSide(color: Colors.blue))),
+          actions: [
+            InkWell(
+              onTap: () {
+                setState(() {
+                  this.price = 0;
+                  this._cupsCounter = 0;
+                });
+              },
+              child: Icon(Icons.clear),
             ),
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(18.0),
-                side: BorderSide(color: Colors.blue))),
-        actions: [
-          InkWell(
-            onTap: () {
-              setState(() {
-                this.price = 0;
-                this._cupsCounter = 0;
-              });
-            },
-            child: Icon(Icons.clear),
-          ),
-          Container(
-            height: double.maxFinite,
-            alignment: Alignment.center,
-            child: Text(
-              "$_cupsCounter Cups = $_currency$price.00",
-              style: TextStyle(fontSize: 18),
+            Container(
+              height: double.maxFinite,
+              alignment: Alignment.center,
+              child: Text(
+                "$_cupsCounter Cups = $_currency$price.00",
+                style: TextStyle(fontSize: 18),
+              ),
+            )
+          ],
+        ),
+        body: Wrap(
+          children: [
+            Padding(
+              padding: EdgeInsets.all(20),
+              child: _mainBody(),
             ),
-          )
-        ],
-      ),
-      body: Padding(
-        padding: EdgeInsets.all(20),
-        child: _mainBody(),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
-    );
+          ],
+        ) // This trailing comma makes auto-formatting nicer for build methods.
+        );
   }
 
   Widget _mainBody() {
@@ -111,7 +133,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   width: double.maxFinite,
                   height: 350,
                   child: Image.asset(
-                    "images/cup_of_coffee.png",
+                    _coffeeCup, //image url passed
                     height: 300,
                   ),
                 )
@@ -153,6 +175,7 @@ class _MyHomePageState extends State<MyHomePage> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 RichText(
+                  textDirection: TextDirection.ltr,
                   text: TextSpan(
                       text: _currency,
                       style: TextStyle(
@@ -161,7 +184,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           color: Colors.black87),
                       children: [
                         TextSpan(
-                            text: _coffeePrice,
+                            text: _coffeePrice.toString(),
                             style: TextStyle(
                                 fontSize: 50, fontWeight: FontWeight.bold))
                       ]),
@@ -177,7 +200,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       onTap: () {
                         setState(() {
                           this._coffeePrice =
-                              index == 0 ? "300" : index == 1 ? "600" : "900";
+                              index == 0 ? this._selectedCoffee.price : index == 1 ? this._selectedCoffee.price * 2 : this._selectedCoffee.price * 3;
                           _selectedPosition = index;
                         });
                       },
@@ -199,7 +222,7 @@ class _MyHomePageState extends State<MyHomePage> {
               onPressed: () {
                 setState(() {
                   this._cupsCounter += 1;
-                  this.price += int.parse(_coffeePrice);
+                  this.price += _coffeePrice.toInt();
                 });
               },
               child: Center(
@@ -237,7 +260,7 @@ class _MyHomePageState extends State<MyHomePage> {
         new Container(
           margin: EdgeInsets.only(right: 10),
           child: Image.asset(
-            coffeeCup,
+            _coffeeCup,
             width: 50,
             color: isSelected ? Colors.blue : Colors.black45,
           ),
