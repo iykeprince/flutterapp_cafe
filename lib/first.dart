@@ -78,7 +78,6 @@ class _FirstPageState extends State<FirstPage>
                     children: <Widget>[
                       Text(
                         'Select',
-                        textDirection: TextDirection.ltr,
                         style: TextStyle(
                           fontSize: 26.0,
                           fontWeight: FontWeight.w400,
@@ -86,7 +85,6 @@ class _FirstPageState extends State<FirstPage>
                       ),
                       Text(
                         'Coffee',
-                        textDirection: TextDirection.ltr,
                         style: TextStyle(
                           fontSize: 37.0,
                           fontWeight: FontWeight.w700,
@@ -130,8 +128,9 @@ class _FirstPageState extends State<FirstPage>
                       FlatButton(
                         onPressed: () {
                           setState(() {
-                            if (_currentIndex > 0)
-                              _pageController.jumpToPage(_currentIndex--);
+                            if (_categoryIndex == 0)
+                              _categoryIndex = 1;
+                            else if (_categoryIndex == 1) _categoryIndex = 0;
                           });
                         },
                         child: new Icon(
@@ -203,7 +202,7 @@ class _FirstPageState extends State<FirstPage>
             children: <Widget>[
               FittedBox(
                 child: Text(
-                  '\$',
+                  '₦',
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w300,
@@ -211,12 +210,14 @@ class _FirstPageState extends State<FirstPage>
                   ),
                 ),
               ),
-              Text(
-                price,
-                style: TextStyle(
-                  fontWeight: FontWeight.w500,
-                  fontSize: 22,
-                  color: Colors.white,
+              FittedBox(
+                child: Text(
+                  price,
+                  style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    fontSize: 19,
+                    color: Colors.white,
+                  ),
                 ),
               )
             ],
@@ -239,8 +240,10 @@ class _FirstPageState extends State<FirstPage>
           onTap: () {
             print('${coffee.title} is selected');
 
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => MyApp(coffee: coffee)));
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => MyHomePage(coffee: coffee)));
           },
           child: Stack(
             children: <Widget>[
@@ -251,14 +254,19 @@ class _FirstPageState extends State<FirstPage>
                     height: MediaQuery.of(context).size.height * 0.45,
                     width: double.maxFinite,
                     alignment: Alignment.topRight,
+                    clipBehavior: Clip.antiAlias,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(50),
-                        topRight: Radius.circular(50),
+                        topLeft: Radius.circular(36),
+                        topRight: Radius.circular(36),
                       ),
                     ),
-                    child: Image.asset(
-                      coffee.url,
+                    child: Wrap(
+                      children: [
+                        Image.asset(
+                          coffee.url,
+                        ),
+                      ],
                     ),
                   ),
                   Container(
@@ -315,7 +323,7 @@ class _FirstPageState extends State<FirstPage>
               fontWeight:
                   _categoryIndex == index ? FontWeight.bold : FontWeight.normal,
               fontSize: _categoryIndex == index ? 22 : 18,
-              color: _categoryIndex == index ? Colors.black : Colors.black12),
+              color: _categoryIndex == index ? Colors.black : Colors.grey),
         ),
       ),
     );
