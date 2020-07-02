@@ -1,5 +1,13 @@
+import 'dart:async' show Future;
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show rootBundle;
+import 'package:flutterapp/models/cafe.dart';
+
 import './main.dart';
+import './models/category.dart';
+import './models/coffee.dart';
 
 // #EDE7E6;
 // RGB(237,231, 230)
@@ -18,147 +26,170 @@ class FirstPage extends StatefulWidget {
   _FirstPageState createState() => _FirstPageState();
 }
 
-class _FirstPageState extends State<FirstPage>
-    with SingleTickerProviderStateMixin {
+class _FirstPageState extends State<FirstPage> {
   int _currentIndex = 0;
   int _categoryIndex = 0;
-  List<Coffee> coffeeList1 = List<Coffee>();
-  List<Coffee> coffeeList2 = List<Coffee>();
-  Category category1;
-  Category category2;
-  List<Category> categoryList = List<Category>();
-
+  Cafe _cafe;
+  List<Coffee> _coffeeList = List<Coffee>();
+  Category _category;
   PageController _pageController = PageController(viewportFraction: 0.8);
-  TabController _tabController;
+
   @override
   void initState() {
-    _tabController = TabController(length: 2, vsync: this);
-
-    this.coffeeList1.add(new Coffee(
-        'images/coffee/coffee-1.png', 'Cappuccino', 'Lattesso', 29.0));
-    this.coffeeList1.add(new Coffee(
-        'images/coffee/coffee-7.png', 'Caffè Americano', 'Coffee 2', 99.0));
-    this.coffeeList1.add(
-        new Coffee('images/coffee/coffee-3.png', 'Espresso', 'Lattes', 49.0));
-    this.coffeeList1.add(
-        new Coffee('images/coffee/coffee-4.png', 'Robusta', 'Coffee 4', 19.0));
-    this.coffeeList1.add(new Coffee(
-        'images/coffee/coffee-5.png', 'Café Latte', 'Macchiatos', 199.0));
-    this.coffeeList2.add(new Coffee(
-        'images/coffee/coffee-6.png', 'Flat White', 'Coffee 6', 21.0));
-    this.coffeeList2.add(new Coffee(
-        'images/coffee/coffee-7.png', 'Short Macchiato', 'Dollop', 28.0));
-    this.coffeeList2.add(
-        new Coffee('images/coffee/coffee-8.png', 'Affogato', 'Coffee 8', 27.0));
-    this.coffeeList2.add(
-        new Coffee('images/coffee/coffee-9.png', 'Mocha', 'Coffee 9', 31.0));
-    this.coffeeList2.add(new Coffee(
-        'images/coffee/coffee-10.png', 'Ristretto', 'Coffee 10', 26.0));
-    this.category1 = Category('Cappuccino', this.coffeeList1);
-    this.category2 = Category('Americano', this.coffeeList2);
-    this.categoryList.add(this.category1);
-    this.categoryList.add(this.category2);
     super.initState();
+  }
+
+  Future<String> _loadAsset() async {
+    return await Future.delayed(
+        const Duration(seconds: 10), () => rootBundle.loadString('cafe.json'));
   }
 
   @override
   Widget build(BuildContext context) {
-    List<Coffee> coffeeList = categoryList[_categoryIndex].coffeeList;
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(color: Color.fromRGBO(238, 232, 232, 1)),
-        child: Column(
-          children: <Widget>[
-            Container(
-              padding: const EdgeInsets.only(top: 50, left: 50, bottom: 20),
-              child: Column(
+        child: FutureBuilder<String>(
+          future: _loadAsset(),
+          builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+            if (snapshot.hasData) {
+              _cafe = Cafe.fromJson(json.decode(snapshot.data));
+              _category = _cafe.categories[_categoryIndex];
+              _coffeeList = _cafe.categories[_categoryIndex].coffeeList;
+
+              return Column(
                 children: <Widget>[
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        'Select',
-                        style: TextStyle(
-                          fontSize: 26.0,
-                          fontWeight: FontWeight.w400,
+                  Container(
+                    padding:
+                        const EdgeInsets.only(top: 50, left: 50, bottom: 20),
+                    child: Column(
+                      children: <Widget>[
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(
+                              'Select',
+                              style: TextStyle(
+                                fontSize: 26.0,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                            Text(
+                              'Coffee',
+                              style: TextStyle(
+                                fontSize: 37.0,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                            Row(
+                              children: <Widget>[
+                                for (var i = 0; i < _coffeeList.length; i++)
+                                  _indicators(
+                                      context,
+                                      _coffeeList[i],
+                                      i,
+                                      _currentIndex)
+                              ],
+                            )
+                          ],
                         ),
-                      ),
-                      Text(
-                        'Coffee',
-                        style: TextStyle(
-                          fontSize: 37.0,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                      Row(
-                        children: <Widget>[
-                          for (var i = 0; i < coffeeList.length; i++)
-                            _indicators(
-                                context, coffeeList[i], i, _currentIndex)
-                        ],
-                      )
-                    ],
+                      ],
+                    ),
                   ),
-                ],
-              ),
-            ),
-            Expanded(
-              child: Container(
-                child: PageView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: coffeeList.length,
-                  itemBuilder: (context, index) =>
-                      _pageItem(context, coffeeList, index),
-                  pageSnapping: false,
-                  controller: _pageController,
-                  onPageChanged: (index) {
-                    setState(() {
-                      _currentIndex = index;
-                    });
-                  },
-                ),
-              ),
-            ),
-            Row(
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(left: 10, bottom: 10),
-                  child: Row(
-                    children: <Widget>[
-                      FlatButton(
-                        onPressed: () {
+                  Expanded(
+                    child: Container(
+                      child: PageView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: _coffeeList.length,
+                        itemBuilder: (context, index) => _pageItem(context, _coffeeList, index),
+                        pageSnapping: false,
+                        controller: _pageController,
+                        onPageChanged: (index) {
                           setState(() {
-                            if (_categoryIndex == 0)
-                              _categoryIndex = 1;
-                            else if (_categoryIndex == 1) _categoryIndex = 0;
+                            _currentIndex = index;
                           });
                         },
-                        child: new Icon(
-                          Icons.arrow_back,
-                          color: Colors.black,
-                          size: 25.0,
-                        ),
-                        shape: new CircleBorder(),
-                        color: Colors.white,
-                        padding: EdgeInsets.all(16.0),
                       ),
-                      LayoutBuilder(
-                        builder: (context, constraints) => Container(
-                          width: 300,
-                          height: 50,
-                          child: ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              itemCount: categoryList.length,
-                              itemBuilder: (context, index) =>
-                                  _categoryItem(index)),
-                        ),
-                      )
-                    ],
+                    ),
                   ),
+                  Row(
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10, bottom: 10),
+                        child: Row(
+                          children: <Widget>[
+                            FlatButton(
+                              onPressed: () {
+                                setState(() {
+                                  if (_categoryIndex > _cafe.categories.length - 1)
+                                    _categoryIndex--;
+                                  else if (_categoryIndex <= _cafe.categories.length)
+                                    _categoryIndex++;
+                                });
+                              },
+                              child: new Icon(
+                                Icons.arrow_back,
+                                color: Colors.black,
+                                size: 25.0,
+                              ),
+                              shape: new CircleBorder(),
+                              color: Colors.white,
+                              padding: EdgeInsets.all(16.0),
+                            ),
+                            LayoutBuilder(
+                              builder: (context, constraints) => Container(
+                                width: 300,
+                                height: 50,
+                                child: ListView.builder(
+                                    scrollDirection: Axis.horizontal,
+                                    itemCount: _cafe.categories.length,
+                                    itemBuilder: (context, index) =>
+                                        _categoryItem(index)),
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ],
+                  )
+                ],
+              );
+            } else if (snapshot.hasError) {
+              return Center(
+                child: Column(
+                  children: <Widget>[
+                    Icon(
+                      Icons.error_outline,
+                      color: Colors.red,
+                      size: 60,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 16),
+                      child: Text('Error: ${snapshot.error}'),
+                    )
+                  ],
                 ),
-              ],
-            )
-          ],
+              );
+            } else {
+              return Center(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    SizedBox(
+                      child: CircularProgressIndicator(),
+                      width: 60,
+                      height: 60,
+                    ),
+                    const Padding(
+                      padding: EdgeInsets.only(top: 16),
+                      child: Text('Awaiting result...'),
+                    )
+                  ],
+                ),
+              );
+            }
+          },
         ),
       ),
     );
@@ -318,7 +349,7 @@ class _FirstPageState extends State<FirstPage>
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 25),
         child: Text(
-          categoryList[index].title,
+          _cafe.categories[index].name,
           style: TextStyle(
               fontWeight:
                   _categoryIndex == index ? FontWeight.bold : FontWeight.normal,
@@ -328,23 +359,4 @@ class _FirstPageState extends State<FirstPage>
       ),
     );
   }
-}
-
-class Coffee {
-  String url, category, title;
-  double price;
-
-  Coffee(this.url, this.category, this.title, this.price);
-
-  @override
-  String toString() {
-    return "image ${this.url} -> category ${this.category} -> title ${this.title} -> price ${this.price}";
-  }
-}
-
-class Category {
-  String title;
-  List<Coffee> coffeeList;
-
-  Category(this.title, this.coffeeList);
 }

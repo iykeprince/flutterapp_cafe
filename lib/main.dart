@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutterapp/first.dart';
+
+import './models/coffee.dart';
 import './first.dart';
 
 void main() {
@@ -17,7 +18,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _selectedPosition = -1;
 
-  double _coffeePrice = 0.0;
+  int _coffeePrice = 0;
 
   int _cupsCounter = 0;
 
