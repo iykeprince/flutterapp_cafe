@@ -121,10 +121,10 @@ class _FirstPageState extends State<FirstPage> {
                             FlatButton(
                               onPressed: () {
                                 setState(() {
-                                  if (_categoryIndex > _cafe.categories.length - 1)
-                                    _categoryIndex--;
-                                  else if (_categoryIndex <= _cafe.categories.length)
+                                  if (_categoryIndex == 0)
                                     _categoryIndex++;
+                                  else if (_categoryIndex >= _cafe.categories.length - 1)
+                                    _categoryIndex--;
                                 });
                               },
                               child: new Icon(
