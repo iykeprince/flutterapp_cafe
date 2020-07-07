@@ -3,30 +3,23 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:flutterapp/detail.dart';
 import 'package:flutterapp/models/cafe.dart';
 
-import './main.dart';
-import './models/category.dart';
-import './models/coffee.dart';
+import 'models/category.dart';
+import 'models/coffee.dart';
 
 // #EDE7E6;
 // RGB(237,231, 230)
-class First extends StatelessWidget {
+
+class HomeScreen extends StatefulWidget {
+  static const routeName = '/home';
+
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: FirstPage(),
-    );
-  }
+  _HomeScreenState createState() => _HomeScreenState();
 }
 
-class FirstPage extends StatefulWidget {
-  @override
-  _FirstPageState createState() => _FirstPageState();
-}
-
-class _FirstPageState extends State<FirstPage> {
+class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
   int _categoryIndex = 0;
   Cafe _cafe;
@@ -41,7 +34,7 @@ class _FirstPageState extends State<FirstPage> {
 
   Future<String> _loadAsset() async {
     return await Future.delayed(
-        const Duration(seconds: 10), () => rootBundle.loadString('cafe.json'));
+        const Duration(seconds: 3), () => rootBundle.loadString('cafe.json'));
   }
 
   @override
@@ -85,10 +78,7 @@ class _FirstPageState extends State<FirstPage> {
                               children: <Widget>[
                                 for (var i = 0; i < _coffeeList.length; i++)
                                   _indicators(
-                                      context,
-                                      _coffeeList[i],
-                                      i,
-                                      _currentIndex)
+                                      context, _coffeeList[i], i, _currentIndex)
                               ],
                             )
                           ],
@@ -101,7 +91,8 @@ class _FirstPageState extends State<FirstPage> {
                       child: PageView.builder(
                         scrollDirection: Axis.horizontal,
                         itemCount: _coffeeList.length,
-                        itemBuilder: (context, index) => _pageItem(context, _coffeeList, index),
+                        itemBuilder: (context, index) =>
+                            _pageItem(context, _coffeeList, index),
                         pageSnapping: false,
                         controller: _pageController,
                         onPageChanged: (index) {
@@ -123,7 +114,8 @@ class _FirstPageState extends State<FirstPage> {
                                 setState(() {
                                   if (_categoryIndex == 0)
                                     _categoryIndex++;
-                                  else if (_categoryIndex >= _cafe.categories.length - 1)
+                                  else if (_categoryIndex >=
+                                      _cafe.categories.length - 1)
                                     _categoryIndex--;
                                 });
                               },
@@ -271,10 +263,11 @@ class _FirstPageState extends State<FirstPage> {
           onTap: () {
             print('${coffee.title} is selected');
 
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => MyHomePage(coffee: coffee)));
+            Navigator.pushNamed(
+              context,
+              DetailScreen.routeName,
+              arguments: coffee
+            );
           },
           child: Stack(
             children: <Widget>[
