@@ -32,7 +32,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: Color.fromRGBO(114, 98, 230, .1),
+        backgroundColor: Theme.of(context).accentColor,
         title: Text('Payment data'),
       ),
       body: SingleChildScrollView(

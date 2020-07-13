@@ -41,7 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(color: Color.fromRGBO(238, 232, 232, 1)),
+        decoration: BoxDecoration(color: Theme.of(context).primaryColor,),
         child: FutureBuilder<String>(
           future: _loadAsset(),
           builder: (BuildContext context, AsyncSnapshot<String> snapshot) {

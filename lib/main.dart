@@ -18,7 +18,8 @@ void main() {
       },
      
       theme: ThemeData(
-        primaryColor: Colors.white,
+        primaryColor: Color.fromRGBO(238, 232, 232, 1),
+        accentColor: Color.fromRGBO(114, 98, 230, .1),
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
     ),
