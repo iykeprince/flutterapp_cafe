@@ -27,7 +27,7 @@ class _DetailScreenState extends State<DetailScreen> {
   @override
   Widget build(BuildContext context) {
     _coffee = ModalRoute.of(context).settings.arguments;
-    print('build selected size @ $_coffeePrice');
+    // print('build selected size @ $_coffeePrice');
     _cart = Cart(totalPrice: price);
     return Scaffold(
         appBar: AppBar(
