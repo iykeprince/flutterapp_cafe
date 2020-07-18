@@ -3,6 +3,7 @@ import 'package:flutterapp/checkout.dart';
 
 import 'models/cart.dart';
 import 'models/coffee.dart';
+import 'widget/animated_button.dart';
 
 class DetailScreen extends StatefulWidget {
   static const routeName = '/detail';
@@ -13,7 +14,8 @@ class DetailScreen extends StatefulWidget {
   _DetailScreenState createState() => _DetailScreenState();
 }
 
-class _DetailScreenState extends State<DetailScreen> {
+class _DetailScreenState extends State<DetailScreen>
+    with SingleTickerProviderStateMixin {
   int _selectedPosition = -1;
   int _coffeePrice = 0;
   int _cupsCounter = 0;
@@ -23,6 +25,13 @@ class _DetailScreenState extends State<DetailScreen> {
   String _coffeeCupImage = "images/coffee_cup_size.png";
   Coffee _coffee;
   Cart _cart;
+
+  @override
+  void initState() {
+    super.initState();
+   
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -189,33 +198,40 @@ class _DetailScreenState extends State<DetailScreen> {
               ],
             ),
           ),
-          Container(
-            margin: EdgeInsets.only(top: 30),
-            padding: EdgeInsets.all(10),
-            width: double.maxFinite,
-            height: 70,
-            child: FlatButton(
-              onPressed: () {
-                setState(() {
-                  this._cupsCounter += 1;
-                  this.price += _coffeePrice;
-                });
-              },
-              child: Center(
-                child: Text(
-                  "Add to Bag",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-              color: Colors.blue,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(50),
-              ),
-            ),
+          Padding(padding: EdgeInsets.all(10)),
+          AnimatedButton(
+            text: "Add to Bag",
+            colors: 'blue',
+            onTap: () {
+              setState(() {
+                this._cupsCounter += 1;
+                this.price += _coffeePrice;
+              });
+            },
           ),
+          // Container(
+          //   margin: EdgeInsets.only(top: 30),
+          //   padding: EdgeInsets.all(10),
+          //   height: sizeAnimation.value,
+          //   // child: FlatButton(
+          //   //   onPressed: () {
+          //   //
+          //   //   },
+          //   //   child: Center(
+          //   //     child: Text(
+          //   //       "Add to Bag",
+          //   //       style: TextStyle(
+          //   //         fontWeight: FontWeight.bold,
+          //   //         color: Colors.white,
+          //   //       ),
+          //   //     ),
+          //   //   ),
+          //   //   color: Colors.blue,
+          //   //   shape: RoundedRectangleBorder(
+          //   //     borderRadius: BorderRadius.circular(50),
+          //   //   ),
+          //   // ),
+          // ),
         ],
       ),
     );
@@ -296,7 +312,6 @@ class _DetailScreenState extends State<DetailScreen> {
                   Container(
                     margin: EdgeInsets.only(top: 30),
                     padding: EdgeInsets.all(10),
-                    width: double.maxFinite,
                     height: 70,
                     child: FlatButton(
                       onPressed: () {

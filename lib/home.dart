@@ -19,7 +19,8 @@ class HomeScreen extends StatefulWidget {
   _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen>
+    with SingleTickerProviderStateMixin {
   int _currentIndex = 0;
   int _categoryIndex = 0;
   Cafe _cafe;
@@ -27,27 +28,30 @@ class _HomeScreenState extends State<HomeScreen> {
   Category _category;
   PageController _pageController = PageController(viewportFraction: 0.8);
 
+  Animation<double> animation;
+
   @override
   void initState() {
     super.initState();
   }
 
   Future<String> _loadAsset() async {
-    return await Future.delayed(
-        const Duration(seconds: 3), () => rootBundle.loadString('cafe.json'));
+    return await rootBundle.loadString('cafe.json');
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(color: Theme.of(context).primaryColor,),
+        decoration: BoxDecoration(
+          color: Theme.of(context).primaryColor,
+        ),
         child: FutureBuilder<String>(
           future: _loadAsset(),
           builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
             if (snapshot.hasData) {
               _cafe = Cafe.fromJson(json.decode(snapshot.data));
-              _category = _cafe.categories[_categoryIndex];
+              _category = _cafe.categories[0];
               _coffeeList = _cafe.categories[_categoryIndex].coffeeList;
 
               return Column(
@@ -63,7 +67,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             Text(
                               'Select',
                               style: TextStyle(
-                                fontSize: 26.0,
+                                fontSize: 26,
                                 fontWeight: FontWeight.w400,
                               ),
                             ),
@@ -194,7 +198,9 @@ class _HomeScreenState extends State<HomeScreen> {
           onTap: () {
             print('${coffee.title} indicator selected');
           },
-          child: Container(
+          child: AnimatedContainer(
+            duration: Duration(milliseconds: 300),
+            curve: Curves.bounceInOut,
             width: index == currentIndex ? 16.0 : 5.0,
             height: 5.0,
             margin: EdgeInsets.only(right: 6),
@@ -252,82 +258,96 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _pageItem(context, List<Coffee> coffeeList, int index) {
     Coffee coffee = coffeeList[index];
-    return Padding(
-      padding: EdgeInsets.all(10),
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(80),
-        ),
-        child: InkWell(
-          onTap: () {
-            print('${coffee.title} is selected');
-
-            Navigator.pushNamed(
-              context,
-              DetailScreen.routeName,
-              arguments: coffee
-            );
-          },
-          child: Stack(
-            children: <Widget>[
-              Column(
-                // crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Container(
-                    height: MediaQuery.of(context).size.height * 0.45,
-                    width: double.maxFinite,
-                    alignment: Alignment.topRight,
-                    clipBehavior: Clip.antiAlias,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(36),
-                        topRight: Radius.circular(36),
-                      ),
-                    ),
-                    child: Wrap(
-                      children: [
-                        Image.asset(
-                          coffee.url,
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    alignment: Alignment.centerLeft,
-                    child: Column(
-                      children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.only(left: 16, top: 5),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Text(
-                                coffee.category,
-                                style: TextStyle(
-                                    color: Color.fromRGBO(244, 194, 185, 1),
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w500),
-                              ),
-                              Padding(padding: const EdgeInsets.all(4)),
-                              Text(
-                                coffee.title,
-                                style: TextStyle(
-                                    fontSize: 36, fontWeight: FontWeight.w900),
-                              ),
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        //BoxConstraints(w=309.1, h=553.7)
+        print('contraints: $constraints');
+        return Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: AnimatedContainer(
+            margin: index == _currentIndex
+                ? EdgeInsets.only(
+                    top: 20,
+                    bottom: 20,
                   )
+                : EdgeInsets.only(
+                    top: 0,
+                    bottom: 0,
+                  ),
+            duration: Duration(milliseconds: 200),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(80),
+            ),
+            child: InkWell(
+              onTap: () {
+                print('${coffee.title} is selected');
+
+                Navigator.pushNamed(context, DetailScreen.routeName,
+                    arguments: coffee);
+              },
+              child: Stack(
+                children: <Widget>[
+                  Column(
+                    // crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Container(
+                        height: MediaQuery.of(context).size.height * 0.45,
+                        width: double.maxFinite,
+                        alignment: Alignment.topRight,
+                        clipBehavior: Clip.antiAlias,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(36),
+                            topRight: Radius.circular(36),
+                          ),
+                        ),
+                        child: Wrap(
+                          children: [
+                            Image.asset(
+                              coffee.url,
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        alignment: Alignment.centerLeft,
+                        child: Column(
+                          children: <Widget>[
+                            Padding(
+                              padding: const EdgeInsets.only(left: 16, top: 5),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Text(
+                                    coffee.category,
+                                    style: TextStyle(
+                                        color: Color.fromRGBO(244, 194, 185, 1),
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                  Padding(padding: const EdgeInsets.all(4)),
+                                  Text(
+                                    coffee.title,
+                                    style: TextStyle(
+                                        fontSize: 36,
+                                        fontWeight: FontWeight.w900),
+                                  ),
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                  _priceWidget(coffee.price.toString()),
                 ],
               ),
-              _priceWidget(coffee.price.toString()),
-            ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
@@ -336,7 +356,7 @@ class _HomeScreenState extends State<HomeScreen> {
       onTap: () {
         setState(() {
           _categoryIndex = index;
-          _pageController.jumpToPage(0);
+          _pageController.animateToPage(0, duration: Duration(milliseconds: 300), curve: Curves.bounceIn);
         });
       },
       child: Padding(
@@ -351,5 +371,10 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 }
