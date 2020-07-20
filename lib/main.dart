@@ -3,7 +3,6 @@ import 'package:flutterapp/checkout.dart';
 
 import 'home.dart';
 import 'detail.dart';
-import 'models/coffee.dart';
 
 void main() {
   runApp(

@@ -29,9 +29,7 @@ class _DetailScreenState extends State<DetailScreen>
   @override
   void initState() {
     super.initState();
-   
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -41,21 +39,32 @@ class _DetailScreenState extends State<DetailScreen>
     return Scaffold(
         appBar: AppBar(
           elevation: 0,
-          title: FlatButton(
-              onPressed: () {
-                _confirmOrderModalBottomSheet(
-                    totalPrice: "$_currency$price",
-                    numOfCups: "x $_cupsCounter");
-              },
-              child: Text(
-                "Buy Now",
-                style: TextStyle(
-                  color: Colors.black87,
-                ),
+          title: AnimatedContainer(
+            duration: Duration(milliseconds: 200),
+            curve: Curves.easeInOut,
+            decoration: BoxDecoration(
+              border: Border.all(
+                width: 2,
+                color: Colors.red,
               ),
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(18.0),
-                  side: BorderSide(color: Colors.blue))),
+            ),
+            child: FlatButton(
+                onPressed: () {
+
+                  _confirmOrderModalBottomSheet(
+                      totalPrice: "$_currency$price",
+                      numOfCups: "x $_cupsCounter");
+                },
+                child: Text(
+                  "Buy Now",
+                  style: TextStyle(
+                    color: Colors.black87,
+                  ),
+                ),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(18.0),
+                    side: BorderSide(color: Colors.blue))),
+          ),
           actions: [
             InkWell(
               onTap: () {
@@ -199,39 +208,42 @@ class _DetailScreenState extends State<DetailScreen>
             ),
           ),
           Padding(padding: EdgeInsets.all(10)),
-          AnimatedButton(
-            text: "Add to Bag",
-            colors: 'blue',
-            onTap: () {
-              setState(() {
-                this._cupsCounter += 1;
-                this.price += _coffeePrice;
-              });
-            },
-          ),
-          // Container(
-          //   margin: EdgeInsets.only(top: 30),
-          //   padding: EdgeInsets.all(10),
-          //   height: sizeAnimation.value,
-          //   // child: FlatButton(
-          //   //   onPressed: () {
-          //   //
-          //   //   },
-          //   //   child: Center(
-          //   //     child: Text(
-          //   //       "Add to Bag",
-          //   //       style: TextStyle(
-          //   //         fontWeight: FontWeight.bold,
-          //   //         color: Colors.white,
-          //   //       ),
-          //   //     ),
-          //   //   ),
-          //   //   color: Colors.blue,
-          //   //   shape: RoundedRectangleBorder(
-          //   //     borderRadius: BorderRadius.circular(50),
-          //   //   ),
-          //   // ),
+          // AnimatedButton(
+          //   text: "Add to Bag",
+          //   colors: 'blue',
+          //   onTap: () {
+          //     setState(() {
+          //       this._cupsCounter += 1;
+          //       this.price += _coffeePrice;
+          //     });
+          //   },
           // ),
+          Container(
+            margin: EdgeInsets.only(top: 30),
+            padding: EdgeInsets.all(10),
+            height: 70,
+            child: FlatButton(
+              onPressed: () {
+                setState(() {
+                  this._cupsCounter += 1;
+                  this.price += _coffeePrice;
+                });
+              },
+              child: Center(
+                child: Text(
+                  "Add to Bag",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+              color: Colors.blue,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(50),
+              ),
+            ),
+          ),
         ],
       ),
     );

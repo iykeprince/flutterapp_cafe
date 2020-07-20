@@ -265,16 +265,14 @@ class _HomeScreenState extends State<HomeScreen>
         return Padding(
           padding: const EdgeInsets.all(10.0),
           child: AnimatedContainer(
-            margin: index == _currentIndex
-                ? EdgeInsets.only(
-                    top: 20,
-                    bottom: 20,
+            margin: index != _currentIndex
+                ? EdgeInsets.symmetric(
+                    vertical: 20,
                   )
-                : EdgeInsets.only(
-                    top: 0,
-                    bottom: 0,
+                : EdgeInsets.symmetric(
+                    vertical: 0,
                   ),
-            duration: Duration(milliseconds: 200),
+            duration: Duration(milliseconds: 100),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(80),
