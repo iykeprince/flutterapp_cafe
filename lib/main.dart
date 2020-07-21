@@ -3,14 +3,16 @@ import 'package:flutterapp/checkout.dart';
 
 import 'home.dart';
 import 'detail.dart';
+import 'splash.dart';
 
 void main() {
   runApp(
     MaterialApp(
       title: 'Cafe',
       debugShowCheckedModeBanner: false,
-      initialRoute: HomeScreen.routeName,
+      initialRoute: Splash.routeName,
       routes: {
+        Splash.routeName: (context) => Splash(),
         HomeScreen.routeName: (context) => HomeScreen(),
         DetailScreen.routeName: (context) => DetailScreen(),
         CheckOutScreen.routeName: (context) => CheckOutScreen(),
