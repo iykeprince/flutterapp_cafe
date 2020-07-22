@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutterapp/home.dart';
 
 class Splash extends StatefulWidget {
   static const routeName = '/';
@@ -9,78 +10,74 @@ class Splash extends StatefulWidget {
 }
 
 class _SplashState extends State<Splash> with SingleTickerProviderStateMixin {
-  AnimationController _animationController;
-  Animation<double> _fadeAnimation;
-  Animation<Offset> _slideInLeftAnimation;
-  Animation<Offset> _slideInBottomAnimation;
+
+  double slideLeft = -2;
+  double slideBottom = 2;
+  double opacity = 0;
 
   @override
   void initState() {
     super.initState();
-    _animationController = AnimationController(
-        duration: Duration(milliseconds: 1500), vsync: this);
-    _fadeAnimation =
-        Tween<double>(begin: 0.0, end: 1.0).animate(_animationController)
-          ..addListener(() {
-            setState(() {});
-          });
-    _slideInLeftAnimation =
-        Tween<Offset>(begin: Offset(-5.5, 0.0), end: Offset.zero)
-            .animate(_animationController)
-              ..addListener(() {
-                setState(() {});
-              });
-    _slideInBottomAnimation =
-        Tween<Offset>(begin: Offset(0.0, 10.0), end: Offset.zero)
-            .animate(_animationController)
-              ..addListener(() {
-                setState(() {});
-              });
-    _animationController.forward();
+
+    Future.delayed(Duration(milliseconds: 1000), () => runAnimation());
+    Future.delayed(Duration(milliseconds: 3000), () => Navigator.pushNamed(context, HomeScreen.routeName ),);
   }
 
-  @override
-  void dispose() {
-    _animationController.dispose();
-    super.dispose();
+  void runAnimation() {
+    setState(() {
+      opacity = 1;
+      slideLeft = 0;
+      slideBottom = 0.25;
+    });
   }
+
+  // @override
+  // void dispose() {
+  //   _animationController.dispose();
+  //   super.dispose();
+  // }
 
   @override
   Widget build(BuildContext context) {
-    _fadeAnimation.addListener(() {
-      print('value of fade: ${_fadeAnimation.value}');
-    });
     return Scaffold(
       body: Container(
         width: MediaQuery.of(context).size.width,
         color: Colors.brown,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Container(
-              child: AnimatedOpacity(
-                opacity: _fadeAnimation.value,
-                duration: Duration(seconds: 1),
-                curve: Curves.easeInOut,
-                child: Image.asset(
-                  'images/splash.png',
-                  fit: BoxFit.cover,
+        child: Stack(
+          children: <Widget>[
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Container(
+                  child: AnimatedOpacity(
+                    opacity: opacity,
+                    duration: Duration(seconds: 1),
+                    curve: Curves.easeInOut,
+                    child: Image.asset(
+                      'images/splash.png',
+                      fit: BoxFit.cover,
+                    ),
+                  ),
                 ),
-              ),
-            ),
-            SlideTransition(
-              position: _slideInLeftAnimation,
-              child: Text(
-                'Welcome to',
-                style: TextStyle(
-                  fontSize: 16.0,
-                  color: Colors.white,
+                AnimatedAlign(
+                  alignment: Alignment(slideLeft, 0),
+                  duration: Duration(milliseconds: 900),
+                  curve: Curves.easeIn,
+                  child: Text(
+                    'Welcome to',
+                    style: TextStyle(
+                      fontSize: 16.0,
+                      color: Colors.white,
+                    ),
+                  ),
                 ),
-              ),
+              ],
             ),
-            SlideTransition(
-              position: _slideInBottomAnimation,
+            AnimatedAlign(
+              alignment: Alignment(0, slideBottom),
+              curve: Curves.easeIn,
+              duration: Duration(milliseconds: 900),
               child: Text(
                 'Coffee App',
                 style: TextStyle(
